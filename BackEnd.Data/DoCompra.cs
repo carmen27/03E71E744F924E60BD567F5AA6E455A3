@@ -32,19 +32,22 @@ namespace BackEnd.Data
             }
         }
 
-        public Task<bool> ClearDetalles(int nid)
+        public async Task<bool> DeleteDetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        //public Task<bool> Delete(Tcompra compra)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public Task<bool> DeleteDetalle(object detalle)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("nid", id);
+                var query = "DELETE FROM tcompradet";
+                query += " WHERE nid = @nid;";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.ExecuteAsync(query, parameters);
+                return result == 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public bool EnTransaccion() => _transaction != null;
@@ -83,9 +86,22 @@ namespace BackEnd.Data
             }
         }
 
-        public Task<Tcompradet?> GetDetalle(string cguid, string codProducto)
+        public async Task<Tcompradet?> GetDetalle(int compraId, string codProducto)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("ncompraid", compraId);
+                parameters.Add("ccodigo", codProducto);
+                var query = "SELECT TOP 1 nid, ccodigo FROM tcompradet WHERE ncompraid = @ncompraid && ccodigo = @ccodigo";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.QueryFirstOrDefaultAsync<Tcompradet>(query, parameters, null, null, CommandType.Text);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public void IniciarTransaccion()

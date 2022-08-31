@@ -46,15 +46,6 @@ namespace BackEnd.Business
 
                 _doCompra.IniciarTransaccion();
 
-                if (!await _doCompra.ClearDetalles(compra.Nid))
-                {
-                    throw new Exception("Ocurrió un error al eliminar factura");
-                }
-
-                //if (!await _doCompra.Delete(compra))
-                //{
-                //    throw new Exception("Ocurrió un error al eliminar factura");
-                //}
 
                 _doCompra.FinalizarTransaccion();
             }
@@ -76,9 +67,27 @@ namespace BackEnd.Business
                 var result = await _doCompra.GetByCodigo(codigo);
                 if (result != null)
                 {
-                    return new Compra()
+                    var compra = new Compra()
                     {
+                        Codigo = result.Ccodigo,
+                        RucCliente = result.Ccliruc,
+                        RazonCliente = result.Cclirazon,
+                        TotalIgv = result.Ntotaligv,
+                        ImporteSinIgv = result.Nimport,
+                        ImporteConIgv = result.Nimportigv
                     };
+
+                    compra.Detalles = (await _doCompra.ListDetalles(result.Nid)).Select(x => new CompraDetalle()
+                    {
+                        CodProducto = x.Cprodcod,
+                        DescProducto = x.Cproddesc,
+                        Marca = x.Cprodmarca,
+                        Cantidad = x.Ncantidad,
+                        Precio = x.Nprecio,
+                        Total = x.Nimport
+                    }).ToList();
+
+                    return compra;
                 }
 
                 return null;
@@ -335,23 +344,23 @@ namespace BackEnd.Business
                         throw new Exception("Código de producto inválido");
                     }
 
-                    var articulo = await _doProducto.GetByCodigo(item.CodProducto);
+                    var producto = await _doProducto.GetByCodigo(item.CodProducto);
 
-                    if (articulo == null)
+                    if (producto == null)
                     {
                         throw new Exception("Código de producto inválido");
                     }
 
-                    var compraDet = await _doCompra.GetDetalle(compra.Cguid, item.CodProducto);
+                    var compraDet = await _doCompra.GetDetalle(compra.Nid, item.CodProducto);
 
                     if (compraDet == null)
                     {
                         compraDet = new Tcompradet()
                         {
                             Cprodcod = item.CodProducto,
-                            Cproddesc = articulo.Cdescripcion,
-                            Cprodmarca = articulo.Cmarca,
-                            Cprodunid = articulo.Cunidades,
+                            Cproddesc = producto.Cdescripcion,
+                            Cprodmarca = producto.Cmarca,
+                            Cprodunid = producto.Cunidades,
                             Nprecio = item.Precio ?? 0M,
                             Ncantidad = item.Cantidad ?? 0M,
                             Nimport = item.Total ?? 0M,
@@ -385,11 +394,11 @@ namespace BackEnd.Business
 
                 foreach (var detalle in detallesBD)
                 {
-                    var facturaDet = model.Detalles.FirstOrDefault(x => x.CodProducto == detalle.Cprodcod);
+                    var compraDet = model.Detalles.FirstOrDefault(x => x.CodProducto == detalle.Cprodcod);
 
-                    if (facturaDet == null)
+                    if (compraDet == null)
                     {
-                        if (!await _doCompra.DeleteDetalle(detalle))
+                        if (!await _doCompra.DeleteDetById(detalle.Nid))
                         {
                             throw new Exception("Ocurrió un error al eliminar detalle de factura");
                         }

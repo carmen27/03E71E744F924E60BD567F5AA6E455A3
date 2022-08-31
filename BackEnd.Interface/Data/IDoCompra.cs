@@ -6,11 +6,7 @@ namespace BackEnd.Interface.Data
     {
         void CancelarTransaccion();
 
-        Task<bool> ClearDetalles(int nid);
-
-        //Task<bool> Delete(Tcompra compra);
-
-        Task<bool> DeleteDetalle(object detalle);
+        Task<bool> DeleteDetById(int id);
 
         bool EnTransaccion();
 
@@ -18,7 +14,7 @@ namespace BackEnd.Interface.Data
 
         Task<Tcompra?> GetByCodigo(string codigo);
 
-        Task<Tcompradet?> GetDetalle(string cguid, string codProducto);
+        Task<Tcompradet?> GetDetalle(int compraId, string codProducto);
 
         void IniciarTransaccion();
 
