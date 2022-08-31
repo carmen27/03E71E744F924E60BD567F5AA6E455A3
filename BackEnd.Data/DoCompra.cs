@@ -32,6 +32,18 @@ namespace BackEnd.Data
             }
         }
 
+        public Task<bool> ClearDetalles(int nid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Delete(Tcompra compra)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool EnTransaccion() => _transaction != null;
+
         public void FinalizarTransaccion()
         {
             try
@@ -48,8 +60,6 @@ namespace BackEnd.Data
                 throw;
             }
         }
-
-        public bool EnTransaccion() => _transaction != null;
 
         public async Task<Tcompra?> GetByCodigo(string codigo)
         {

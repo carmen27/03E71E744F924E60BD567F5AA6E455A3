@@ -177,11 +177,16 @@ namespace BackEnd.Business
 
                 foreach (var item in model.Detalles)
                 {
-                    var articulo = await _doProducto.Get(item.CodArticulo);
+                    if (string.IsNullOrEmpty(item.CodArticulo))
+                    {
+                        throw new Exception("Código de artículo inválido");
+                    }
+
+                    var articulo = await _doProducto.GetByCodigo(item.CodArticulo);
 
                     if (articulo == null)
                     {
-                        throw new Exception("Códogp de artículo inválido");
+                        throw new Exception("Código de artículo inválido");
                     }
 
                     var newFacturaDet = new Tcompradet()
@@ -190,9 +195,9 @@ namespace BackEnd.Business
                         Cproddesc = articulo.Cdescripcion,
                         Cprodmarca = articulo.Cmarca,
                         Cprodunid = articulo.Cunidades,
-                        Nprecio = item.Precio,
-                        Ncantidad = item.Cantidad,
-                        Nimport = item.Total,
+                        Nprecio = item.Precio ?? 0M,
+                        Ncantidad = item.Cantidad ?? 0M,
+                        Nimport = item.Total ?? 0M,
                         Cestado = "R",
                         Ncompraid = compra.Nid,
                         Cusucrea = "ADMIN",
@@ -226,30 +231,30 @@ namespace BackEnd.Business
         {
             try
             {
-                model.Tipo = ConvertHelper.ToNonNullString(model.Tipo).ToUpper();
-                model.NumSerie = ConvertHelper.ToNonNullString(model.NumSerie).ToUpper();
-                model.NumDocumento = ConvertHelper.ToNonNullString(model.NumDocumento).ToUpper();
-                model.RucCliente = ConvertHelper.ToNonNullString(model.RucCliente).ToUpper();
-                model.Moneda = ConvertHelper.ToNonNullString(model.Moneda).ToUpper();
-                model.Glosa1 = ConvertHelper.ToNonNullString(model.Glosa1).ToUpper();
-                model.Fecha = ConvertHelper.ToNonNullString(model.Fecha).ToUpper();
+                //model.Tipo = ConvertHelper.ToNonNullString(model.Tipo).ToUpper();
+                //model.RucCliente = ConvertHelper.ToNonNullString(model.RucCliente).ToUpper();
+                //model.Moneda = ConvertHelper.ToNonNullString(model.Moneda).ToUpper();
+                //model.Glosa1 = ConvertHelper.ToNonNullString(model.Glosa1).ToUpper();
+                //model.Fecha = ConvertHelper.ToNonNullString(model.Fecha).ToUpper();
 
-                if (model.Tipo == string.Empty || (model.Tipo != "01" && model.Tipo != "02"))
-                {
-                    throw new Exception("Tipo de factura inválida");
-                }
+                //if (model.Tipo == string.Empty || (model.Tipo != "01" && model.Tipo != "02"))
+                //{
+                //    throw new Exception("Tipo de factura inválida");
+                //}
 
-                if (model.NumSerie == string.Empty)
-                {
-                    throw new Exception("Número de serie inválido");
-                }
+                //if (model.NumSerie == string.Empty)
+                //{
+                //    throw new Exception("Número de serie inválido");
+                //}
 
-                if (model.NumDocumento == string.Empty)
-                {
-                    throw new Exception("Número de documento inválido");
-                }
+                //if (model.NumDocumento == string.Empty)
+                //{
+                //    throw new Exception("Número de documento inválido");
+                //}
 
-                var compra = await _doCompra.Get(model.Tipo, model.NumSerie, model.NumDocumento);
+                model.Codigo = ConvertHelper.ToNonNullString(model.Codigo);
+
+                var compra = await _doCompra.GetByCodigo(model.Codigo);
 
                 if (compra == null)
                 {
@@ -266,31 +271,31 @@ namespace BackEnd.Business
                     throw new Exception("RUC de cliente inválido");
                 }
 
-                var cliente = await _doCliente.Get(model.RucCliente);
+                //var cliente = await _doCliente.Get(model.RucCliente);
 
-                if (cliente == null)
-                {
-                    throw new Exception("Cliente no existe");
-                }
+                //if (cliente == null)
+                //{
+                //    throw new Exception("Cliente no existe");
+                //}
 
-                var fechaDocumento = ConvertHelper.ToNullDateTimeWithFormat(model.Fecha, "dd/MM/yyyy");
+                //var fechaDocumento = ConvertHelper.ToNullDateTimeWithFormat(model.Fecha, "dd/MM/yyyy");
 
-                if (fechaDocumento == null)
-                {
-                    throw new Exception("Fecha tiene formato inválido");
-                }
+                //if (fechaDocumento == null)
+                //{
+                //    throw new Exception("Fecha tiene formato inválido");
+                //}
 
                 if (model.Detalles == null || model.Detalles.Count == 0)
                 {
                     throw new Exception("Factura no contiene detalles");
                 }
 
-                var usuario = await _doUsuario.GetByGuid(usuGuid);
+                //var usuario = await _doUsuario.GetByGuid(usuGuid);
 
-                if (usuario == null)
-                {
-                    throw new Exception("Usuario no existe");
-                }
+                //if (usuario == null)
+                //{
+                //    throw new Exception("Usuario no existe");
+                //}
 
                 var cabecTotal = 0M;
                 var cabecTotalIgv = 0M;
@@ -298,8 +303,8 @@ namespace BackEnd.Business
                 foreach (var item in model.Detalles)
                 {
                     item.Total = item.Cantidad * item.Precio;
-                    cabecTotal += item.Total;
-                    cabecTotalIgv += item.Total * model.TasaIgv;
+                    cabecTotal += item.Total ?? 0M;
+                    cabecTotalIgv += (item.Total ?? 0M) * (model.TasaIgv ?? 0M);
                 }
 
                 model.Detalles = model.Detalles.Where(x => x.Total != 0M).ToList();
@@ -309,16 +314,14 @@ namespace BackEnd.Business
                     throw new Exception("Total a facturar no puede ser 0");
                 }
 
-                compra.Dfecha = fechaDocumento.Value;
                 compra.Cmoneda = model.Moneda;
                 compra.Ntotaligv = cabecTotalIgv;
                 compra.Nimport = cabecTotal;
                 compra.Nimportigv = cabecTotal + cabecTotalIgv;
-                compra.Cglosa1 = model.Glosa1;
-                compra.Cusumodi = usuario.Ccodigo;
+                compra.Cusumodi = "ADMIN";
                 compra.Dfecmodi = DateTime.Now;
 
-                await _doCompra.IniciarTransaccion();
+                _doCompra.IniciarTransaccion();
 
                 if (!await _doCompra.Update(compra))
                 {
@@ -390,7 +393,7 @@ namespace BackEnd.Business
                     }
                 }
 
-                await _doCompra.FinalizarTransaccion();
+                _doCompra.FinalizarTransaccion();
 
                 var result = await Get(compra.Ccodigo);
                 return result;
@@ -399,7 +402,7 @@ namespace BackEnd.Business
             {
                 if (_doCompra.EnTransaccion())
                 {
-                    await _doCompra.CancelarTransaccion();
+                    _doCompra.CancelarTransaccion();
                 }
                 _logger.LogError($"Ocurrió un error: {ex}");
                 throw;

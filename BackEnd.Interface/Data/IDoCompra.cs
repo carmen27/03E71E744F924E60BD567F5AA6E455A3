@@ -15,5 +15,6 @@ namespace BackEnd.Interface.Data
         bool EnTransaccion();
         Task<bool> ClearDetalles(int nid);
         Task<bool> Delete(Tcompra compra);
+        Task<bool> Save(Tcompra compra);
     }
 }
