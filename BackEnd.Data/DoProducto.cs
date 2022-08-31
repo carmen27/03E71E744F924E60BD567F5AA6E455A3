@@ -37,7 +37,7 @@ namespace BackEnd.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("codigo", codigo);
-                var query = "SELECT TOP 1 nid, ccodigo FROM tproducto WHERE ccodigo = @codigo";
+                var query = "SELECT TOP 1 nid, ccodigo, cdescripcion, cmarca, cunidades, nprecio FROM tproducto WHERE ccodigo = @codigo";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.QueryFirstOrDefaultAsync<Tproducto>(query, parameters, null, null, CommandType.Text);
                 return result;
