@@ -5,24 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace BackEnd.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/v1/usuario")]
-    public class UsuarioController : ControllerBase
+    [Route("api/v1/producto")]
+    public class ProductoController : ControllerBase
     {
-        private readonly IBoUsuario _boUsuario;
-        private readonly ILogger<UsuarioController> _logger;
+        private readonly IBoProducto _boProducto;
+        private readonly ILogger<ProductoController> _logger;
 
-        public UsuarioController(ILogger<UsuarioController> logger, IBoUsuario boUsuario)
+        public ProductoController(ILogger<ProductoController> logger, IBoProducto boProducto)
         {
             _logger = logger;
-            _boUsuario = boUsuario;
+            _boProducto = boProducto;
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] Usuario model)
+        public async Task<IActionResult> Delete([FromBody] Producto model)
         {
             try
             {
-                await _boUsuario.Delete(model);
+                await _boProducto.Delete(model);
                 return Ok();
             }
             catch (Exception ex)
@@ -36,7 +36,7 @@ namespace BackEnd.WebApi.Controllers
         {
             try
             {
-                var result = await _boUsuario.Get(codigo);
+                var result = await _boProducto.Get(codigo);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -46,11 +46,11 @@ namespace BackEnd.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save([FromBody] Usuario model)
+        public async Task<IActionResult> Save([FromBody] Producto model)
         {
             try
             {
-                var result = await _boUsuario.Save(model);
+                var result = await _boProducto.Save(model);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -60,11 +60,11 @@ namespace BackEnd.WebApi.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] Usuario model)
+        public async Task<IActionResult> Update([FromBody] Producto model)
         {
             try
             {
-                var result = await _boUsuario.Update(model);
+                var result = await _boProducto.Update(model);
                 return Ok(result);
             }
             catch (Exception ex)

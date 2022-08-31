@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BackEnd.Business\BackEnd.Business.csproj" />
+    <ProjectReference Include="..\BackEnd.Common\BackEnd.Common.csproj" />
     <ProjectReference Include="..\BackEnd.Data\BackEnd.Data.csproj" />
     <ProjectReference Include="..\BackEnd.Interface\BackEnd.Interface.csproj" />
     <ProjectReference Include="..\BackEnd.Model\BackEnd.Model.csproj" />

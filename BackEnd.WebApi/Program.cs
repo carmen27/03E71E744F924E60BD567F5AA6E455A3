@@ -1,13 +1,12 @@
 using BackEnd.Business;
+using BackEnd.Common;
 using BackEnd.Data;
 using BackEnd.Interface.Business;
 using BackEnd.Interface.Data;
-using System.Data.Common;
-using System.Data.SqlClient;
-
-//DbProviderFactories.RegisterFactory("Microsoft.Data.SqlClient", SqlClientFactory.Instance);
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<AppSettings>(options => builder.Configuration.Bind(options));
 
 // Add services to the container.
 
@@ -19,6 +18,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IConnectionFactory, ConnectionFactory>();
 builder.Services.AddScoped<IBoUsuario, BoUsuario>();
 builder.Services.AddScoped<IDoUsuario, DoUsuario>();
+builder.Services.AddScoped<IBoProducto, BoProducto>();
+builder.Services.AddScoped<IDoProducto, DoProducto>();
 
 var app = builder.Build();
 
