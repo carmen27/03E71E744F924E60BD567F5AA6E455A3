@@ -20,7 +20,7 @@ namespace BackEnd.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("cemail", email);
-                var query = "SELECT TOP 1 1 WHERE cemail = @cemail AND cestado != 'N'";
+                var query = "SELECT TOP 1 1 FROM tusuario WHERE cemail = @cemail AND cestado != 'N'";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.ExecuteScalarAsync<bool>(query, parameters, null, null, CommandType.Text);
                 return result;
@@ -37,7 +37,7 @@ namespace BackEnd.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("codigo", codigo);
-                var query = "SELECT TOP 1 nid, ccodigo, cnombre FROM tusuario WHERE ccodigo = @codigo";
+                var query = "SELECT TOP 1 nid, ccodigo, cnombres FROM tusuario WHERE ccodigo = @codigo";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.QueryFirstOrDefaultAsync<Tusuario>(query, parameters, null, null, CommandType.Text);
                 return result;
@@ -54,7 +54,7 @@ namespace BackEnd.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("cnumdocum", numDocum);
-                var query = "SELECT TOP 1 nid, ccodigo, cnombre FROM tusuario WHERE cnumdocum = @cnumdocum";
+                var query = "SELECT TOP 1 nid, ccodigo, cnombres FROM tusuario WHERE cnumdocum = @cnumdocum";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.QueryFirstOrDefaultAsync<Tusuario>(query, parameters, null, null, CommandType.Text);
                 return result;
@@ -71,7 +71,7 @@ namespace BackEnd.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("nid", id);
-                var query = "SELECT TOP 1 nid, ccodigo, cnombre FROM tusuario WHERE nid = @nid";
+                var query = "SELECT TOP 1 nid, ccodigo, cnombres FROM tusuario WHERE nid = @nid";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.QueryFirstOrDefaultAsync<Tusuario>(query, parameters, null, null, CommandType.Text);
                 return result;
@@ -102,9 +102,9 @@ namespace BackEnd.Data
             try
             {
                 var query = "INSERT INTO tusuario (cguid, ccodigo, cnombres, capellidos, cusername, ypassword, ntipdocum,";
-                query += " cnumdocum, cemail, cnumero1, cnumero2, cnumero3, cestado, cusucrea, dfeccrea, cusumodi, dfecmodi)";
+                query += " cnumdocum, cemail, cnumero1, cnumero2, cnumero3, cestado, cusucrea, dfeccrea)";
                 query += " VALUES (@cguid, @ccodigo, @cnombres, @capellidos, @cusername, @ypassword, @ntipdocum, @cnumdocum,";
-                query += " @cemail, @cnumero1, @cnumero2, @cnumero3, @cestado, @cusucrea, @dfeccrea, @cusumodi, @dfecmodi);";
+                query += " @cemail, @cnumero1, @cnumero2, @cnumero3, @cestado, @cusucrea, @dfeccrea);";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.ExecuteAsync(query, usuario);
                 return result > 0;
