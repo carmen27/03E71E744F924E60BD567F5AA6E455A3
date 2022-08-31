@@ -20,7 +20,7 @@ namespace BackEnd.Data
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("ccodigo", codigo);
-                var query = "SELECT TOP 1 1 WHERE ccodigo = @ccodigo AND cestado != 'N'";
+                var query = "SELECT TOP 1 1 FROM tproducto WHERE ccodigo = @ccodigo AND cestado != 'N'";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.ExecuteScalarAsync<bool>(query, parameters, null, null, CommandType.Text);
                 return result;

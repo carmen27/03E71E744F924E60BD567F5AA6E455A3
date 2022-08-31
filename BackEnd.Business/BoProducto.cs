@@ -101,7 +101,7 @@ namespace BackEnd.Business
                         throw new Exception("Ocurrió un error al obtener último id");
                     }
 
-                    model.Codigo = $"AR{(lastId + 1).ToString().PadLeft(8, '0')}";
+                    model.Codigo = $"PRD{(lastId + 1).ToString().PadLeft(7, '0')}";
                 }
                 else
                 {
