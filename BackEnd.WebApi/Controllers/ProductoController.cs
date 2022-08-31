@@ -59,7 +59,7 @@ namespace BackEnd.WebApi.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> Update([FromBody] Producto model)
         {
             try
