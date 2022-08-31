@@ -41,7 +41,7 @@ namespace BackEnd.Data
                 var query = "DELETE FROM tcompradet";
                 query += " WHERE nid = @nid;";
                 using var connection = _connectionFactory.GetConnection();
-                var result = await connection.ExecuteAsync(query, parameters);
+                var result = await connection.ExecuteAsync(query, parameters, _transaction);
                 return result == 0;
             }
             catch (Exception ex)
@@ -143,7 +143,7 @@ namespace BackEnd.Data
                 query += " VALUES (@cguid, @ccodigo, @ctipo, @dfecha, @ccliruc, @cclirazon, @nvaligv, @ntotaligv,";
                 query += " @nimport, @nimportigv, @cmoneda, @cobserv, @cestado, @cusucrea, @dfeccrea);";
                 using var connection = _connectionFactory.GetConnection();
-                var result = await connection.ExecuteAsync(query, compra);
+                var result = await connection.ExecuteAsync(query, compra, _transaction);
                 return result == 0;
             }
             catch (Exception ex)
@@ -159,7 +159,7 @@ namespace BackEnd.Data
                 var query = "INSERT INTO tcompradet (cprodcod, cproddesc, cprodmarca, cprodunid, nprecio, ncantidad, nimport, cestado, ncompraid, cusucrea, dfeccrea)";
                 query += " VALUES (@cprodcod, @cproddesc, @cprodmarca, @cprodunid, @nprecio, @ncantidad, @nimport, @cestado, @ncompraid, @cusucrea, @dfeccrea);";
                 using var connection = _connectionFactory.GetConnection();
-                var result = await connection.ExecuteAsync(query, compraDet);
+                var result = await connection.ExecuteAsync(query, compraDet, _transaction);
                 return result == 0;
             }
             catch (Exception ex)
@@ -184,7 +184,7 @@ namespace BackEnd.Data
                 query += " dfecmodi = @dfecmodi";
                 query += " WHERE nid = @nid;";
                 using var connection = _connectionFactory.GetConnection();
-                var result = await connection.ExecuteAsync(query, compra);
+                var result = await connection.ExecuteAsync(query, compra, _transaction);
                 return result == 0;
             }
             catch (Exception ex)
@@ -206,7 +206,7 @@ namespace BackEnd.Data
                 query += " dfecmodi = @dfecmodi";
                 query += " WHERE nid = @nid;";
                 using var connection = _connectionFactory.GetConnection();
-                var result = await connection.ExecuteAsync(query, compraDet);
+                var result = await connection.ExecuteAsync(query, compraDet, _transaction);
                 return result == 0;
             }
             catch (Exception ex)

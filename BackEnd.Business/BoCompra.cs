@@ -44,10 +44,9 @@ namespace BackEnd.Business
                     throw new Exception("Solo es posible eliminar compras en estado REGISTRADO");
                 }
 
-                _doCompra.IniciarTransaccion();
+                compra.Cestado = "N";
 
-
-                _doCompra.FinalizarTransaccion();
+                await _doCompra.Update(compra);
             }
             catch (Exception ex)
             {
@@ -234,41 +233,10 @@ namespace BackEnd.Business
                     throw new Exception("Compra no existe");
                 }
 
-                //if (model.Moneda == string.Empty)
-                //{
-                //    throw new Exception("Código de moneda inválido");
-                //}
-
-                //if (model.RucCliente == string.Empty)
-                //{
-                //    throw new Exception("RUC de cliente inválido");
-                //}
-
-                //var cliente = await _doCliente.Get(model.RucCliente);
-
-                //if (cliente == null)
-                //{
-                //    throw new Exception("Cliente no existe");
-                //}
-
-                //var fechaDocumento = ConvertHelper.ToNullDateTimeWithFormat(model.Fecha, "dd/MM/yyyy");
-
-                //if (fechaDocumento == null)
-                //{
-                //    throw new Exception("Fecha tiene formato inválido");
-                //}
-
                 if (model.Detalles == null || model.Detalles.Count == 0)
                 {
                     throw new Exception("Compra no contiene detalles");
                 }
-
-                //var usuario = await _doUsuario.GetByGuid(usuGuid);
-
-                //if (usuario == null)
-                //{
-                //    throw new Exception("Usuario no existe");
-                //}
 
                 var cabecTotal = 0M;
                 var cabecTotalIgv = 0M;
@@ -291,7 +259,7 @@ namespace BackEnd.Business
                 {
                     compra.Cmoneda = ConvertHelper.ToNonNullString(model.Moneda);
                 }
-                
+
                 compra.Ntotaligv = cabecTotalIgv;
                 compra.Nimport = cabecTotal;
                 compra.Nimportigv = cabecTotal + cabecTotalIgv;
