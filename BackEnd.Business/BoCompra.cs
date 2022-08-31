@@ -51,10 +51,10 @@ namespace BackEnd.Business
                     throw new Exception("Ocurrió un error al eliminar factura");
                 }
 
-                if (!await _doCompra.Delete(compra))
-                {
-                    throw new Exception("Ocurrió un error al eliminar factura");
-                }
+                //if (!await _doCompra.Delete(compra))
+                //{
+                //    throw new Exception("Ocurrió un error al eliminar factura");
+                //}
 
                 _doCompra.FinalizarTransaccion();
             }
@@ -381,7 +381,7 @@ namespace BackEnd.Business
                     }
                 }
 
-                var detallesBD = await _doCompra.ListDetalles(compra.Cguid);
+                var detallesBD = await _doCompra.ListDetalles(compra.Nid);
 
                 foreach (var detalle in detallesBD)
                 {

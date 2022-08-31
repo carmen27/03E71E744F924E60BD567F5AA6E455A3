@@ -8,7 +8,7 @@ namespace BackEnd.Interface.Data
 
         Task<bool> ClearDetalles(int nid);
 
-        Task<bool> Delete(Tcompra compra);
+        //Task<bool> Delete(Tcompra compra);
 
         Task<bool> DeleteDetalle(object detalle);
 
@@ -22,14 +22,14 @@ namespace BackEnd.Interface.Data
 
         void IniciarTransaccion();
 
-        Task<List<Tcompradet>> ListDetalles(string cguid);
+        Task<IEnumerable<Tcompradet>> ListDetalles(int compraId);
 
         Task<bool> Save(Tcompra compra);
 
-        Task<bool> SaveDetalle(Tcompradet newFacturaDet);
+        Task<bool> SaveDetalle(Tcompradet compraDet);
 
         Task<bool> Update(Tcompra compra);
 
-        Task<bool> UpdateDetalle(object facturaDet);
+        Task<bool> UpdateDetalle(Tcompradet compraDet);
     }
 }

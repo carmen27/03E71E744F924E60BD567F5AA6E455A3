@@ -37,10 +37,10 @@ namespace BackEnd.Data
             throw new NotImplementedException();
         }
 
-        public Task<bool> Delete(Tcompra compra)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<bool> Delete(Tcompra compra)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public Task<bool> DeleteDetalle(object detalle)
         {
@@ -101,29 +101,102 @@ namespace BackEnd.Data
             }
         }
 
-        public Task<List<Tcompradet>> ListDetalles(string cguid)
+        public async Task<IEnumerable<Tcompradet>> ListDetalles(int compraId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("ncompraid", compraId);
+                var query = "SELECT nid, ccodigo FROM tcompradet WHERE ncompraid = @ncompraid";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.QueryAsync<Tcompradet>(query, parameters, null, null, CommandType.Text);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task<bool> Save(Tcompra compra)
+        public async Task<bool> Save(Tcompra compra)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var query = "INSERT INTO tcompra (cguid, ccodigo, ctipo, dfecha, ccliruc, cclirazon, nvaligv,";
+                query += " ntotaligv, nimport, nimportigv, cmoneda, cobserv, cestado, cusucrea, dfeccrea)";
+                query += " VALUES (@cguid, @ccodigo, @ctipo, @dfecha, @ccliruc, @cclirazon, @nvaligv, @ntotaligv,";
+                query += " @nimport, @nimportigv, @cmoneda, @cobserv, @cestado, @cusucrea, @dfeccrea);";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.ExecuteAsync(query, compra);
+                return result == 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task<bool> SaveDetalle(Tcompradet newFacturaDet)
+        public async Task<bool> SaveDetalle(Tcompradet compraDet)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var query = "INSERT INTO tcompradet (cprodcod, cproddesc, cprodmarca, cprodunid, nprecio, ncantidad, nimport, cestado, ncompraid, cusucrea, dfeccrea)";
+                query += " VALUES (@cprodcod, @cproddesc, @cprodmarca, @cprodunid, @nprecio, @ncantidad, @nimport, @cestado, @ncompraid, @cusucrea, @dfeccrea);";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.ExecuteAsync(query, compraDet);
+                return result == 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task<bool> Update(Tcompra compra)
+        public async Task<bool> Update(Tcompra compra)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var query = "UPDATE tcompra SET";
+                query += " nvaligv = @nvaligv,";
+                query += " ntotaligv = @ntotaligv,";
+                query += " nimport = @nimport,";
+                query += " nimportigv = @nimportigv,";
+                query += " cmoneda = @cmoneda,";
+                query += " cobserv = @cobserv,";
+                query += " cestado = @cestado,";
+                query += " cusumodi = @cusumodi,";
+                query += " dfecmodi = @dfecmodi";
+                query += " WHERE nid = @nid;";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.ExecuteAsync(query, compra);
+                return result == 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
-        public Task<bool> UpdateDetalle(object facturaDet)
+        public async Task<bool> UpdateDetalle(Tcompradet compraDet)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var query = "UPDATE tcompradet SET";
+                query += " nprecio = @nprecio,";
+                query += " ncantidad = @ncantidad,";
+                query += " nimport = @nimport,";
+                query += " cestado = @cestado";
+                query += " cusumodi = @cusumodi,";
+                query += " dfecmodi = @dfecmodi";
+                query += " WHERE nid = @nid;";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.ExecuteAsync(query, compraDet);
+                return result == 0;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
