@@ -7,11 +7,11 @@ namespace BackEnd.Entity
         [JsonPropertyName("cantidad")]
         public decimal? Cantidad { get; set; }
 
-        [JsonPropertyName("cod_articulo")]
-        public string? CodArticulo { get; set; }
+        [JsonPropertyName("cod_producto")]
+        public string? CodProducto { get; set; }
 
-        [JsonPropertyName("desc_articulo")]
-        public string? DescArticulo { get; set; }
+        [JsonPropertyName("desc_producto")]
+        public string? DescProducto { get; set; }
 
         [JsonPropertyName("marca")]
         public string? Marca { get; set; }

@@ -13,5 +13,6 @@ namespace BackEnd.Interface.Data
         Task<bool> Save(Tproducto producto);
 
         Task<bool> Update(Tproducto producto);
+        Task GetDetalleByCodigo(string codArticulo);
     }
 }

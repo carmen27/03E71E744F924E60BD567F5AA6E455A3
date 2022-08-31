@@ -42,6 +42,11 @@ namespace BackEnd.Data
             throw new NotImplementedException();
         }
 
+        public Task<bool> DeleteDetalle(object detalle)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool EnTransaccion() => _transaction != null;
 
         public void FinalizarTransaccion()
@@ -78,6 +83,11 @@ namespace BackEnd.Data
             }
         }
 
+        public Task<Tcompradet?> GetDetalle(string cguid, string codProducto)
+        {
+            throw new NotImplementedException();
+        }
+
         public void IniciarTransaccion()
         {
             try
@@ -89,6 +99,31 @@ namespace BackEnd.Data
             {
                 throw;
             }
+        }
+
+        public Task<List<Tcompradet>> ListDetalles(string cguid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Save(Tcompra compra)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> SaveDetalle(Tcompradet newFacturaDet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Update(Tcompra compra)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateDetalle(object facturaDet)
+        {
+            throw new NotImplementedException();
         }
     }
 }

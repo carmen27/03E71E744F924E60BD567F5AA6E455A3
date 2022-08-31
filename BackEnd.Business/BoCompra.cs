@@ -78,7 +78,6 @@ namespace BackEnd.Business
                 {
                     return new Compra()
                     {
-
                     };
                 }
 
@@ -177,12 +176,12 @@ namespace BackEnd.Business
 
                 foreach (var item in model.Detalles)
                 {
-                    if (string.IsNullOrEmpty(item.CodArticulo))
+                    if (string.IsNullOrEmpty(item.CodProducto))
                     {
                         throw new Exception("Código de artículo inválido");
                     }
 
-                    var articulo = await _doProducto.GetByCodigo(item.CodArticulo);
+                    var articulo = await _doProducto.GetByCodigo(item.CodProducto);
 
                     if (articulo == null)
                     {
@@ -191,7 +190,7 @@ namespace BackEnd.Business
 
                     var newFacturaDet = new Tcompradet()
                     {
-                        Cprodcod = item.CodArticulo,
+                        Cprodcod = item.CodProducto,
                         Cproddesc = articulo.Cdescripcion,
                         Cprodmarca = articulo.Cmarca,
                         Cprodunid = articulo.Cunidades,
@@ -225,7 +224,6 @@ namespace BackEnd.Business
                 throw;
             }
         }
-
 
         public async Task<Compra> Update(Compra model)
         {
@@ -332,46 +330,51 @@ namespace BackEnd.Business
 
                 foreach (var item in model.Detalles)
                 {
-                    var articulo = await _doProducto.Get(item.CodArticulo);
+                    if (string.IsNullOrEmpty(item.CodProducto))
+                    {
+                        throw new Exception("Código de producto inválido");
+                    }
+
+                    var articulo = await _doProducto.GetByCodigo(item.CodProducto);
 
                     if (articulo == null)
                     {
-                        throw new Exception("Códogp de artículo inválido");
+                        throw new Exception("Código de producto inválido");
                     }
 
-                    var facturaDet = await _doCompra.GetDetalle(compra.Cguid, item.CodArticulo);
+                    var compraDet = await _doCompra.GetDetalle(compra.Cguid, item.CodProducto);
 
-                    if (facturaDet == null)
+                    if (compraDet == null)
                     {
-                        facturaDet = new Tfactdet()
+                        compraDet = new Tcompradet()
                         {
-                            Cartcod = item.CodArticulo,
-                            Cartdesc = articulo.Cdescripcion,
-                            Cartmarca = articulo.Cmarca,
-                            Cartunidades = articulo.Cunidades,
-                            Nprecio = item.Precio,
-                            Ncantidad = item.Cantidad,
-                            Nimport = item.Total,
+                            Cprodcod = item.CodProducto,
+                            Cproddesc = articulo.Cdescripcion,
+                            Cprodmarca = articulo.Cmarca,
+                            Cprodunid = articulo.Cunidades,
+                            Nprecio = item.Precio ?? 0M,
+                            Ncantidad = item.Cantidad ?? 0M,
+                            Nimport = item.Total ?? 0M,
                             Cestado = "R",
-                            Nfacturaid = compra.Nid,
-                            Cusucrea = usuario.Ccodigo,
+                            Ncompraid = compra.Nid,
+                            Cusucrea = "ADMIN",
                             Dfeccrea = DateTime.Now
                         };
 
-                        if (!await _doCompra.SaveDetalle(facturaDet))
+                        if (!await _doCompra.SaveDetalle(compraDet))
                         {
                             throw new Exception("Ocurrió un error al registar detalle de factura");
                         }
                     }
                     else
                     {
-                        facturaDet.Nprecio = item.Precio;
-                        facturaDet.Ncantidad = item.Cantidad;
-                        facturaDet.Nimport = item.Total;
-                        facturaDet.Cusumodi = usuario.Ccodigo;
-                        facturaDet.Dfecmodi = DateTime.Now;
+                        compraDet.Nprecio = item.Precio ?? 0M;
+                        compraDet.Ncantidad = item.Cantidad ?? 0M;
+                        compraDet.Nimport = item.Total ?? 0M;
+                        compraDet.Cusumodi = "ADMIN";
+                        compraDet.Dfecmodi = DateTime.Now;
 
-                        if (!await _doCompra.UpdateDetalle(facturaDet))
+                        if (!await _doCompra.UpdateDetalle(compraDet))
                         {
                             throw new Exception("Ocurrió un error al actualizar detalle de factura");
                         }
@@ -382,7 +385,7 @@ namespace BackEnd.Business
 
                 foreach (var detalle in detallesBD)
                 {
-                    var facturaDet = model.Detalles.FirstOrDefault(x => x.CodArticulo == detalle.Cartcod);
+                    var facturaDet = model.Detalles.FirstOrDefault(x => x.CodProducto == detalle.Cprodcod);
 
                     if (facturaDet == null)
                     {
