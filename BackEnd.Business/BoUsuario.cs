@@ -94,9 +94,9 @@ namespace BackEnd.Business
         {
             try
             {
-                model.Apellidos = ConvertHelper.ToNonNullString(model.Apellidos);
+                model.Apellidos = ConvertHelper.ToNonNullString(model.Apellidos).ToUpper();
                 model.Email = ConvertHelper.ToNonNullString(model.Email);
-                model.Nombres = ConvertHelper.ToNonNullString(model.Nombres);
+                model.Nombres = ConvertHelper.ToNonNullString(model.Nombres).ToUpper();
                 model.Username = ConvertHelper.ToNonNullString(model.Username);
                 model.Password = ConvertHelper.ToNonNullString(model.Password);
                 model.NumDocum = ConvertHelper.ToNonNullString(model.NumDocum);
@@ -110,6 +110,11 @@ namespace BackEnd.Business
                 if (model.TipoDocum == null)
                 {
                     throw new ArgumentException("Se requiere tipo de documento");
+                }
+
+                if (model.TipoDocum != 1) //SOLO DNI
+                {
+                    throw new ArgumentException("Se requiere tipo de documento DNI");
                 }
 
                 if (model.NumDocum == null)

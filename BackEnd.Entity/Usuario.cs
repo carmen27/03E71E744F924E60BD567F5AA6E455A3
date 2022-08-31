@@ -26,7 +26,7 @@ namespace BackEnd.Entity
         public string? Telefono { get; set; }
 
         [JsonPropertyName("tipo_docum")]
-        public int? TipoDocum { get; set; }
+        public int? TipoDocum { get; set; } = 1; //1: DNI, 6: RUC
 
         [JsonPropertyName("username")]
         public string? Username { get; set; }
