@@ -102,15 +102,8 @@ namespace BackEnd.Business
         {
             try
             {
-                model.Tipo = ConvertHelper.ToNonNullString(model.Tipo).ToUpper();
                 model.RucCliente = ConvertHelper.ToNonNullString(model.RucCliente).ToUpper();
                 model.Moneda = ConvertHelper.ToNonNullString(model.Moneda).ToUpper();
-                model.Fecha = ConvertHelper.ToNonNullString(model.Fecha).ToUpper();
-
-                if (model.Tipo == string.Empty || (model.Tipo != "01" && model.Tipo != "02"))
-                {
-                    throw new Exception("Tipo de factura inválida");
-                }
 
                 if (model.Moneda == string.Empty)
                 {
@@ -129,16 +122,9 @@ namespace BackEnd.Business
                     throw new Exception("Cliente no existe");
                 }
 
-                var fechaDocumento = ConvertHelper.ToNullDateTimeWithFormat(model.Fecha, "dd/MM/yyyy");
-
-                if (fechaDocumento == null)
-                {
-                    throw new Exception("Fecha tiene formato inválido");
-                }
-
                 if (model.Detalles == null || model.Detalles.Count == 0)
                 {
-                    throw new Exception("Factura no contiene detalles");
+                    throw new Exception("Compra no contiene detalles");
                 }
 
                 var cabecTotal = 0M;
@@ -155,15 +141,15 @@ namespace BackEnd.Business
 
                 if (cabecTotal == 0M)
                 {
-                    throw new Exception("Total a facturar no puede ser 0");
+                    throw new Exception("Total no puede ser 0");
                 }
 
                 var compra = new Tcompra()
                 {
                     Cguid = Guid.NewGuid().ToString("N"),
                     Ccodigo = "COM",
-                    Ctipo = model.Tipo,
-                    Dfecha = fechaDocumento.Value,
+                    Ctipo = "C",
+                    Dfecha = DateTime.Now,
                     Ccliruc = cliente.Cnumdocum,
                     Cclirazon = $"{cliente.Capellidos}, {cliente.Cnombres}",
                     Nvaligv = model.TasaIgv ?? 0M,
@@ -173,31 +159,31 @@ namespace BackEnd.Business
                     Cmoneda = model.Moneda,
                     Cestado = "R",
                     Cusucrea = "ADMIN",
-                    Dfeccrea = DateTime.Now
+                    Dfeccrea = DateTime.Now,
                 };
 
                 _doCompra.IniciarTransaccion();
 
                 if (!await _doCompra.Save(compra))
                 {
-                    throw new Exception("Ocurrió un error al registar factura");
+                    throw new Exception("Ocurrió un error al registar compra");
                 }
 
                 foreach (var item in model.Detalles)
                 {
                     if (string.IsNullOrEmpty(item.CodProducto))
                     {
-                        throw new Exception("Código de artículo inválido");
+                        throw new Exception("Código de producto inválido");
                     }
 
                     var articulo = await _doProducto.GetByCodigo(item.CodProducto);
 
                     if (articulo == null)
                     {
-                        throw new Exception("Código de artículo inválido");
+                        throw new Exception("Código de producto inválido");
                     }
 
-                    var newFacturaDet = new Tcompradet()
+                    var compraDet = new Tcompradet()
                     {
                         Cprodcod = item.CodProducto,
                         Cproddesc = articulo.Cdescripcion,
@@ -212,9 +198,9 @@ namespace BackEnd.Business
                         Dfeccrea = DateTime.Now
                     };
 
-                    if (!await _doCompra.SaveDetalle(newFacturaDet))
+                    if (!await _doCompra.SaveDetalle(compraDet))
                     {
-                        throw new Exception("Ocurrió un error al registar detalle de factura");
+                        throw new Exception("Ocurrió un error al registar detalle de compra");
                     }
                 }
 
@@ -238,26 +224,6 @@ namespace BackEnd.Business
         {
             try
             {
-                //model.Tipo = ConvertHelper.ToNonNullString(model.Tipo).ToUpper();
-                //model.RucCliente = ConvertHelper.ToNonNullString(model.RucCliente).ToUpper();
-                //model.Moneda = ConvertHelper.ToNonNullString(model.Moneda).ToUpper();
-                //model.Glosa1 = ConvertHelper.ToNonNullString(model.Glosa1).ToUpper();
-                //model.Fecha = ConvertHelper.ToNonNullString(model.Fecha).ToUpper();
-
-                //if (model.Tipo == string.Empty || (model.Tipo != "01" && model.Tipo != "02"))
-                //{
-                //    throw new Exception("Tipo de factura inválida");
-                //}
-
-                //if (model.NumSerie == string.Empty)
-                //{
-                //    throw new Exception("Número de serie inválido");
-                //}
-
-                //if (model.NumDocumento == string.Empty)
-                //{
-                //    throw new Exception("Número de documento inválido");
-                //}
 
                 model.Codigo = ConvertHelper.ToNonNullString(model.Codigo);
 
@@ -265,18 +231,18 @@ namespace BackEnd.Business
 
                 if (compra == null)
                 {
-                    throw new Exception("Factura no existe");
+                    throw new Exception("Compra no existe");
                 }
 
-                if (model.Moneda == string.Empty)
-                {
-                    throw new Exception("Código de moneda inválido");
-                }
+                //if (model.Moneda == string.Empty)
+                //{
+                //    throw new Exception("Código de moneda inválido");
+                //}
 
-                if (model.RucCliente == string.Empty)
-                {
-                    throw new Exception("RUC de cliente inválido");
-                }
+                //if (model.RucCliente == string.Empty)
+                //{
+                //    throw new Exception("RUC de cliente inválido");
+                //}
 
                 //var cliente = await _doCliente.Get(model.RucCliente);
 
@@ -294,7 +260,7 @@ namespace BackEnd.Business
 
                 if (model.Detalles == null || model.Detalles.Count == 0)
                 {
-                    throw new Exception("Factura no contiene detalles");
+                    throw new Exception("Compra no contiene detalles");
                 }
 
                 //var usuario = await _doUsuario.GetByGuid(usuGuid);
@@ -318,10 +284,14 @@ namespace BackEnd.Business
 
                 if (cabecTotal == 0M)
                 {
-                    throw new Exception("Total a facturar no puede ser 0");
+                    throw new Exception("Total no puede ser 0");
                 }
 
-                compra.Cmoneda = model.Moneda;
+                if (model.Moneda != null)
+                {
+                    compra.Cmoneda = ConvertHelper.ToNonNullString(model.Moneda);
+                }
+                
                 compra.Ntotaligv = cabecTotalIgv;
                 compra.Nimport = cabecTotal;
                 compra.Nimportigv = cabecTotal + cabecTotalIgv;
@@ -332,10 +302,8 @@ namespace BackEnd.Business
 
                 if (!await _doCompra.Update(compra))
                 {
-                    throw new Exception("Ocurrió un error al registar factura");
+                    throw new Exception("Ocurrió un error al registar compra");
                 }
-
-                //await _doFactura.ClearDetalles(oldFactura.Nid);
 
                 foreach (var item in model.Detalles)
                 {
@@ -372,7 +340,7 @@ namespace BackEnd.Business
 
                         if (!await _doCompra.SaveDetalle(compraDet))
                         {
-                            throw new Exception("Ocurrió un error al registar detalle de factura");
+                            throw new Exception("Ocurrió un error al registar detalle de compra");
                         }
                     }
                     else
@@ -385,7 +353,7 @@ namespace BackEnd.Business
 
                         if (!await _doCompra.UpdateDetalle(compraDet))
                         {
-                            throw new Exception("Ocurrió un error al actualizar detalle de factura");
+                            throw new Exception("Ocurrió un error al actualizar detalle de compra");
                         }
                     }
                 }
@@ -400,7 +368,7 @@ namespace BackEnd.Business
                     {
                         if (!await _doCompra.DeleteDetById(detalle.Nid))
                         {
-                            throw new Exception("Ocurrió un error al eliminar detalle de factura");
+                            throw new Exception("Ocurrió un error al eliminar detalle de compra");
                         }
                     }
                 }
