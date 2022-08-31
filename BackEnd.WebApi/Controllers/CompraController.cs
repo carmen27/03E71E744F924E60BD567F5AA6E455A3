@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BackEnd.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/v1/usuario")]
+    [Route("api/v1/compra")]
     public class CompraController : ControllerBase
     {
         private readonly IBoCompra _boCompra;
