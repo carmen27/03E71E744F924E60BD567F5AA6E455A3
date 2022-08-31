@@ -71,7 +71,7 @@ namespace BackEnd.Data
                 query += " VALUES (@cguid, @ccodigo, @cdescripcion, @cmarca, @cunidades, @nprecio, @cestado, @cusucrea, @dfeccrea);";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.ExecuteAsync(query, producto);
-                return result == 0;
+                return result > 0;
             }
             catch (Exception ex)
             {
@@ -92,7 +92,7 @@ namespace BackEnd.Data
                 query += " WHERE nid = @nid;";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.ExecuteAsync(query, producto);
-                return result == 0;
+                return result > 0;
             }
             catch (Exception ex)
             {

@@ -107,7 +107,7 @@ namespace BackEnd.Data
                 query += " @cemail, @cnumero1, @cnumero2, @cnumero3, @cestado, @cusucrea, @dfeccrea, @cusumodi, @dfecmodi);";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.ExecuteAsync(query, usuario);
-                return result == 0;
+                return result > 0;
             }
             catch (Exception ex)
             {
@@ -131,7 +131,7 @@ namespace BackEnd.Data
                 query += " WHERE nid = @nid;";
                 using var connection = _connectionFactory.GetConnection();
                 var result = await connection.ExecuteAsync(query, usuario);
-                return result == 0;
+                return result > 0;
             }
             catch (Exception ex)
             {
