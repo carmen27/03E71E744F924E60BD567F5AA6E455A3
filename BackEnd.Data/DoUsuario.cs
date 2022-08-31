@@ -48,6 +48,23 @@ namespace BackEnd.Data
             }
         }
 
+        public async Task<Tusuario?> GetByDocum(string numDocum)
+        {
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("cnumdocum", numDocum);
+                var query = "SELECT TOP 1 nid, ccodigo, cnombre FROM tusuario WHERE cnumdocum = @cnumdocum";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.QueryFirstOrDefaultAsync<Tusuario>(query, parameters, null, null, CommandType.Text);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<Tusuario?> GetById(int id)
         {
             try

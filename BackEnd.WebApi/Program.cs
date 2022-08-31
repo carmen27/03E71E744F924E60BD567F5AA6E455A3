@@ -15,11 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IConnectionFactory, ConnectionFactory>();
+builder.Services.AddSingleton<IConnectionFactory, ConnectionFactory>();
 builder.Services.AddScoped<IBoUsuario, BoUsuario>();
 builder.Services.AddScoped<IDoUsuario, DoUsuario>();
 builder.Services.AddScoped<IBoProducto, BoProducto>();
 builder.Services.AddScoped<IDoProducto, DoProducto>();
+builder.Services.AddScoped<IBoCompra, BoCompra>();
+builder.Services.AddScoped<IDoCompra, DoCompra>();
 
 var app = builder.Build();
 

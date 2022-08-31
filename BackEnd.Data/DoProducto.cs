@@ -31,20 +31,6 @@ namespace BackEnd.Data
             }
         }
 
-        public async Task<int> GetLastId()
-        {
-            try
-            {
-                var query = "SELECT ISNULL(MAX(nid), 0) FROM tproducto";
-                using var connection = _connectionFactory.GetConnection();
-                var result = await connection.ExecuteScalarAsync<int>(query);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
         public async Task<Tproducto?> GetByCodigo(string codigo)
         {
             try
@@ -61,6 +47,22 @@ namespace BackEnd.Data
                 throw;
             }
         }
+
+        public async Task<int> GetLastId()
+        {
+            try
+            {
+                var query = "SELECT ISNULL(MAX(nid), 0) FROM tproducto";
+                using var connection = _connectionFactory.GetConnection();
+                var result = await connection.ExecuteScalarAsync<int>(query);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<bool> Save(Tproducto producto)
         {
             try

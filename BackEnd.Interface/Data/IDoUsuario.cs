@@ -8,6 +8,8 @@ namespace BackEnd.Interface.Data
 
         Task<Tusuario?> GetByCodigo(string codigo);
 
+        Task<Tusuario?> GetByDocum(string numDocum);
+
         Task<Tusuario?> GetById(int id);
 
         Task<int> GetLastId();
